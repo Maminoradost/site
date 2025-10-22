@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лидеры Красных</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow: hidden;
+        }
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            padding: 70px 90px;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+        }
+        .slide.active {
+            display: flex;
+            animation: slideIn 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateX(100px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0);
+            }
+        }
+        .slide.prev {
+            animation: slideOut 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        @keyframes slideOut {
+            from { 
+                opacity: 1; 
+                transform: translateX(0);
+            }
+            to { 
+                opacity: 0; 
+                transform: translateX(-100px);
+            }
+        }
+        h1 {
+            font-size: 68px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+        h2 {
+            font-size: 52px;
+            font-weight: 600;
+            margin-bottom: 35px;
+            color: #cc0000;
+        }
+        h3 {
+            font-size: 26px;
+            font-weight: 400;
+            margin-bottom: 20px;
+            color: #999;
+        }
+        p {
+            font-size: 20px;
+            line-height: 1.7;
+            font-weight: 300;
+            margin-bottom: 12px;
+            max-width: 900px;
+        }
+        ul {
+            list-style: none;
+            margin-top: 25px;
+        }
+        li {
+            font-size: 19px;
+            line-height: 1.7;
+            font-weight: 300;
+            margin-bottom: 12px;
+            padding-left: 30px;
+            position: relative;
+        }
+        li:before {
+            content: "—";
+            position: absolute;
+            left: 0;
+            color: #cc0000;
+        }
+        .title-slide {
+            align-items: center;
+            text-align: center;
+        }
+        .title-slide h1 {
+            font-size: 92px;
+            margin-bottom: 30px;
+        }
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background: transparent;
+            border: 1px solid #444;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 0;
+            transition: all 0.3s;
+            font-weight: 300;
+            font-family: 'Montserrat', sans-serif;
+        }
+        button:hover {
+            background: #cc0000;
+            border-color: #cc0000;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .slide-number {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            font-size: 18px;
+            color: #666;
+            z-index: 1000;
+            font-weight: 300;
+        }
+        .accent {
+            color: #cc0000;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-top: 35px;
+        }
+        .column {
+            display: flex;
+            flex-direction: column;
+        }
+        .section-title {
+            font-size: 30px;
+            color: #cc0000;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .author {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            font-size: 16px;
+            color: #666;
+            z-index: 1000;
+            font-weight: 300;
+        }
+        .quote {
+            font-style: italic;
+            color: #aaa;
+            margin-top: 15px;
+            padding-left: 20px;
+            border-left: 2px solid #cc0000;
+        }
+        
+        .leader-photo {
+            width: 180px;
+            height: 220px;
+            object-fit: cover;
+            border: 2px solid #333;
+            margin-bottom: 20px;
+            filter: grayscale(100%);
+            transition: all 0.3s;
+        }
+        
+        .leader-photo:hover {
+            filter: grayscale(0%);
+            border-color: #cc0000;
+            transform: scale(1.02);
+        }
+
+        /* Адаптация под телефоны и планшеты */
+        @media screen and (max-width: 768px) {
+            .slide {
+                padding: 30px 20px;
+                justify-content: flex-start;
+                padding-top: 80px;
+                padding-bottom: 100px;
+            }
+            
+            h1 {
+                font-size: 36px;
+                margin-bottom: 15px;
+            }
+            
+            h2 {
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+            
+            h3 {
+                font-size: 18px;
+                margin-bottom: 15px;
+            }
+            
+            .title-slide h1 {
+                font-size: 42px;
+                margin-bottom: 20px;
+            }
+            
+            p {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 10px;
+                max-width: 100%;
+            }
+            
+            li {
+                font-size: 15px;
+                line-height: 1.6;
+                margin-bottom: 10px;
+                padding-left: 25px;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                margin-top: 20px;
+            }
+            
+            .section-title {
+                font-size: 22px;
+                margin-bottom: 15px;
+            }
+            
+            .controls {
+                bottom: 15px;
+                right: 15px;
+                gap: 10px;
+                flex-direction: row;
+                width: auto;
+            }
+            
+            button {
+                padding: 14px 20px;
+                font-size: 14px;
+                min-width: 70px;
+            }
+            
+            .slide-number {
+                bottom: 15px;
+                left: 15px;
+                font-size: 14px;
+            }
+            
+            .author {
+                top: 15px;
+                right: 15px;
+                left: 15px;
+                font-size: 13px;
+                text-align: center;
+            }
+            
+            ul {
+                margin-top: 15px;
+            }
+        }
+
+        /* Очень маленькие экраны */
+        @media screen and (max-width: 480px) {
+            .slide {
+                padding: 25px 15px;
+                padding-top: 70px;
+                padding-bottom: 90px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+            
+            .title-slide h1 {
+                font-size: 32px;
+            }
+            
+            p {
+                font-size: 15px;
+            }
+            
+            li {
+                font-size: 14px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+            
+            button {
+                padding: 12px 16px;
+                font-size: 13px;
+                min-width: 60px;
+            }
+            
+            .leader-photo {
+                width: 140px;
+                height: 180px;
+                margin: 0 auto 15px;
+            }
+        }
+
+        /* Планшеты в альбомной ориентации */
+        @media screen and (min-width: 769px) and (max-width: 1024px) {
+            .slide {
+                padding: 50px 60px;
+            }
+            
+            h1 {
+                font-size: 52px;
+            }
+            
+            h2 {
+                font-size: 40px;
+            }
+            
+            .title-slide h1 {
+                font-size: 68px;
+            }
+            
+            p {
+                font-size: 18px;
+            }
+            
+            li {
+                font-size: 17px;
+            }
+            
+            .section-title {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="author">Выполнил: Кашпырев Арсений</div>
+    
+    <div class="presentation">
+        <!-- Слайд 1: Титульный -->
+        <div class="slide active title-slide">
+            <h1>ЛИДЕРЫ КРАСНЫХ</h1>
+            <p style="font-size: 28px; color: #999;">Политические и военные вожди революции и Гражданской войны</p>
+            <p style="font-size: 20px; color: #666; margin-top: 20px;">1917–1922</p>
+        </div>
+
+        <!-- Слайд 2: Введение -->
+        <div class="slide">
+            <h2>ВВЕДЕНИЕ</h2>
+            <p>Гражданская война в России (1918-1922) стала одним из самых трагических периодов в истории страны. Противостояние красных (большевиков) и белых (антибольшевистских сил) унесло миллионы жизней и определило дальнейший путь развития России на десятилетия вперёд.</p>
+            <p style="margin-top: 20px;">Победа красных в этой войне была обусловлена не только военным превосходством, но и наличием харизматичных и решительных лидеров, которые смогли мобилизовать массы, создать эффективную армию и установить жёсткий контроль над огромной территорией.</p>
+            <p style="margin-top: 20px;">В этой презентации мы рассмотрим ключевых политических и военных лидеров красного движения, их роль в революции и Гражданской войне, а также факторы, которые привели к их победе.</p>
+        </div>
+
+        <!-- Слайд 3: Политические лидеры большевиков -->
+        <div class="slide">
+            <h2>ПОЛИТИЧЕСКИЕ ЛИДЕРЫ</h2>
+            <div class="grid">
+                <div class="column">
+                    <img src="https://cdn.britannica.com/82/120582-050-ABE4E69A/Vladimir-Lenin-1918.jpg" alt="Владимир Ленин" class="leader-photo" onerror="this.src='https://via.placeholder.com/180x220/333/cc0000?text=Lenin'">
+                    <div class="section-title">Владимир Ленин</div>
+                    <p style="font-size: 18px;">1870–1924</p>
+                    <p>Основатель большевистской партии и идеолог марксизма-ленинизма. Ленин был бесспорным лидером Октябрьской революции 1917 года и создателем Советского государства.</p>
+                    <p style="margin-top: 15px;">Как Председатель Совнаркома, он руководил страной в самые критические годы, принимая решения о заключении Брестского мира, проведении политики "военного коммунизма" и красного террора. Его политическая воля и харизма объединяли большевистское движение.</p>
+                </div>
+                <div class="column">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Stalin_1902.jpg" alt="Иосиф Сталин" class="leader-photo" onerror="this.style.display='none'">
+                    <div class="section-title">Иосиф Сталин</div>
+                    <p style="font-size: 18px;">1878–1953</p>
+                    <p>Генеральный секретарь ЦК партии с 1922 года, Сталин постепенно укреплял свою власть в партийном аппарате. Во время Гражданской войны был членом Реввоенсовета и участвовал в обороне Царицына.</p>
+                    <p style="margin-top: 15px;">Как нарком по делам национальностей, он разрабатывал политику большевиков по отношению к народам бывшей Российской империи. После смерти Ленина стал его преемником и установил личную диктатуру.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 4: Троцкий и Свердлов -->
+        <div class="slide">
+            <h2>ОРГАНИЗАТОРЫ РЕВОЛЮЦИИ И ВЛАСТИ</h2>
+            <div class="grid">
+                <div class="column">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Leon_Trotsky.jpg" alt="Лев Троцкий" class="leader-photo" onerror="this.style.display='none'">
+                    <div class="section-title">Лев Троцкий</div>
+                    <p style="font-size: 18px;">1879–1940</p>
+                    <p>Один из главных организаторов Октябрьского переворота, Троцкий стал создателем и вдохновителем Красной Армии. Как нарком по военным делам, он буквально с нуля построил боеспособную армию численностью в несколько миллионов человек.</p>
+                    <p style="margin-top: 15px;">Троцкий лично инспектировал фронты на своём знаменитом бронепоезде, вводил жёсткую дисциплину, использовал царских офицеров и применял заградительные отряды. Его организаторский талант и железная воля были ключевыми факторами победы красных.</p>
+                </div>
+                <div class="column">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Yakov_Sverdlov_2.jpg" alt="Яков Свердлов" class="leader-photo" onerror="this.style.display='none'">
+                    <div class="section-title">Яков Свердлов</div>
+                    <p style="font-size: 18px;">1885–1919</p>
+                    <p>Председатель ВЦИК и фактический глава Советского государства до своей смерти в 1919 году. Свердлов был главным организатором партийного аппарата большевиков и создателем системы советской власти на местах.</p>
+                    <p style="margin-top: 15px;">Именно он организовывал красный террор, подписывал приказы о расстрелах и репрессиях. Свердлов обладал феноменальной памятью и контролировал все кадровые назначения в партии и государстве.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 5: Другие политики -->
+        <div class="slide">
+            <h2>ПАРТИЙНЫЕ ЛИДЕРЫ</h2>
+            <div class="grid">
+                <div class="column">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Grigory_Zinoviev_1920.jpg" alt="Григорий Зиновьев" class="leader-photo" onerror="this.style.display='none'">
+                    <div class="section-title">Григорий Зиновьев</div>
+                    <p style="font-size: 18px;">1883–1936</p>
+                    <p>Глава Петроградского Совета и председатель Коминтерна (Коммунистического Интернационала). Зиновьев был одним из ближайших соратников Ленина и входил в триумвират, боровшийся за власть после смерти вождя.</p>
+                    <p style="margin-top: 15px;">Он руководил обороной Петрограда от войск Юденича и был одним из инициаторов массового террора. В 1920-е годы боролся со Сталиным за власть, но проиграл и был позже репрессирован.</p>
+                </div>
+                <div class="column">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c6/Kamenev_1919_%28cropped%29.jpg" alt="Лев Каменев" class="leader-photo" onerror="this.style.display='none'">
+                    <div class="section-title">Лев Каменев</div>
+                    <p style="font-size: 18px;">1883–1936</p>
+                    <p>Председатель Московского Совета и заместитель Совнаркома. Каменев был видным партийным функционером и также входил в триумвират вместе с Зиновьевым и Сталиным.</p>
+                    <p style="margin-top: 15px;">Известен как более умеренный большевик, который изначально выступал против вооружённого восстания в октябре 1917 года. Несмотря на это, он занимал высокие посты в партии и государстве, пока не стал жертвой сталинских репрессий.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 6: Военные лидеры -->
+        <div class="slide">
+            <h2>ВОЕННЫЕ ЛИДЕРЫ КРАСНОЙ АРМИИ</h2>
+            <div class="grid">
+                <div class="column">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/60/Frunze.jpg" alt="Михаил Фрунзе" class="leader-photo" onerror="this.style.display='none'">
+                    <div class="section-title">Михаил Фрунзе</div>
+                    <p style="font-size: 18px;">1885–1925</p>
+                    <p>Один из самых талантливых красных командиров. Фрунзе возглавлял Восточный фронт и разгромил армию адмирала Колчака в 1919 году, что стало переломным моментом в Гражданской войне.</p>
+                    <p style="margin-top: 15px;">В 1920 году он освободил Крым от войск Врангеля, завершив войну на юге России. Фрунзе был не только талантливым полководцем, но и военным теоретиком. Как нарком по военным делам он провёл масштабные реформы Красной Армии.</p>
+                </div>
+                <div class="column">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Tukhachevsky.jpg" alt="Михаил Тухачевский" class="leader-photo" onerror="this.style.display='none'">
+                    <div class="section-title">Михаил Тухачевский</div>
+                    <p style="font-size: 18px;">1893–1937</p>
+                    <p>Молодой и амбициозный командир, который в 27 лет уже командовал армиями. Тухачевский подавил Кронштадтское восстание в 1921 году и руководил походом на Варшаву в 1920 году.</p>
+                    <p style="margin-top: 15px;">Он был выдающимся военным теоретиком, разработавшим концепцию "глубокой операции" и механизации армии. Стал одним из первых маршалов Советского Союза, но был расстрелян в 1937 году в ходе сталинских репрессий.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 7: Командармы -->
+        <div class="slide">
+            <h2>КОМАНДУЮЩИЕ ФРОНТАМИ</h2>
+            <div class="grid">
+                <div class="column">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Semyon_Budyonny_1929.jpg" alt="Семён Будённый" class="leader-photo" onerror="this.style.display='none'">
+                    <div class="section-title">Семён Будённый</div>
+                    <p style="font-size: 18px;">1883–1973</p>
+                    <p>Легендарный командарм Первой Конной армии, которая стала символом Красной Армии в Гражданской войне. Будённый происходил из казаков и обладал природным талантом кавалерийского командира.</p>
+                    <p style="margin-top: 15px;">Его конная армия сыграла решающую роль в разгроме армии Деникина на Южном фронте. Будённый был трижды удостоен звания Героя Советского Союза и стал маршалом СССР. В отличие от многих других командиров, он пережил сталинские репрессии благодаря личной дружбе со Сталиным.</p>
+                </div>
+                <div class="column">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/07/Kliment_Voroshilov_1929.jpg" alt="Климент Ворошилов" class="leader-photo" onerror="this.style.display='none'">
+                    <div class="section-title">Климент Ворошилов</div>
+                    <p style="font-size: 18px;">1881–1969</p>
+                    <p>Командующий различными армиями в Гражданскую войну, Ворошилов особенно прославился обороной Царицына (позже Сталинград) вместе со Сталиным в 1918 году.</p>
+                    <p style="margin-top: 15px;">После войны он стал наркомом обороны и занимал этот пост с 1925 по 1940 год. Ворошилов был одним из ближайших соратников Сталина и активно участвовал в репрессиях против военных кадров. Стал маршалом Советского Союза и членом высшего партийного руководства.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 8: Народные герои -->
+        <div class="slide">
+            <h2>НАРОДНЫЕ ГЕРОИ ГРАЖДАНСКОЙ ВОЙНЫ</h2>
+            <div class="grid">
+                <div class="column">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/73/Chapayev.jpg" alt="Василий Чапаев" class="leader-photo" onerror="this.style.display='none'">
+                    <div class="section-title">Василий Чапаев</div>
+                    <p style="font-size: 18px;">1887–1919</p>
+                    <p>Командир 25-й стрелковой дивизии, Чапаев стал символом народной войны. Выходец из бедной крестьянской семьи, он не имел военного образования, но обладал природным военным талантом и личной храбростью.</p>
+                    <p style="margin-top: 15px;">Чапаев воевал на Восточном фронте против белых армий и погиб в бою в сентябре 1919 года при переправе через реку Урал. Благодаря книге Фурманова и фильму братьев Васильевых он стал одним из самых популярных героев Гражданской войны в советской культуре.</p>
+                </div>
+                <div class="column">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Kotovsky1.jpg" alt="Григорий Котовский" class="leader-photo" onerror="this.style.display='none'">
+                    <div class="section-title">Григорий Котовский</div>
+                    <p style="font-size: 18px;">1881–1925</p>
+                    <p>Легендарный кавалерийский командир, прославившийся своими дерзкими рейдами по тылам противника. Котовский командовал 2-й кавалерийской бригадой и отличился в боях на Южном фронте.</p>
+                    <p style="margin-top: 15px;">После войны он руководил борьбой с бандитизмом в Молдавии и Бессарабии. Котовский был народным героем, о нём слагали песни и легенды. Погиб в 1925 году при невыясненных обстоятельствах.</p>
+                </div>
+            </div>ой с бандитизмом в Молдавии и Бессарабии. Котовский был народным героем, о нём слагали песни и легенды. Погиб в 1925 году при невыясненных обстоятельствах.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 9: ЧК -->
+        <div class="slide">
+            <h2>ОРГАНЫ БЕЗОПАСНОСТИ</h2>
+            <div class="grid">
+                <div class="column">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Felix_Dzerzhinsky_1919.jpg" alt="Феликс Дзержинский" class="leader-photo" onerror="this.style.display='none'">
+                    <div class="section-title">Феликс Дзержинский</div>
+                    <p style="font-size: 18px;">1877–1926</p>
+                    <p>Основатель и руководитель ВЧК (Всероссийской чрезвычайной комиссии по борьбе с контрреволюцией), Дзержинский стал символом революционного террора. Его называли "Железным Феликсом" за беспощадность к врагам революции.</p>
+                    <p style="margin-top: 15px;">ВЧК под его руководством проводила массовые аресты, расстрелы и репрессии против реальных и мнимых противников советской власти. Дзержинский был фанатично предан делу революции и считал террор необходимым инструментом для её защиты. После войны возглавил ОГПУ и участвовал в восстановлении экономики страны.</p>
+                </div>
+                <div class="column">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Menzhinsky.jpg" alt="Вячеслав Менжинский" class="leader-photo" onerror="this.style.display='none'">
+                    <div class="section-title">Вячеслав Менжинский</div>
+                    <p style="font-size: 18px;">1874–1934</p>
+                    <p>Заместитель Дзержинского в ВЧК, а после его смерти в 1926 году возглавил ОГПУ. Менжинский был интеллектуалом, знал несколько иностранных языков и отличался от своего предшественника более тонкими методами работы.</p>
+                    <p style="margin-top: 15px;">Под его руководством ОГПУ превратилось в мощную спецслужбу, которая контролировала не только политическую ситуацию в стране, но и проводила операции за рубежом. Менжинский руководил коллективизацией и раскулачиванием в конце 1920-х – начале 1930-х годов.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 10: Факторы победы -->
+        <div class="slide">
+            <h2>КЛЮЧЕВЫЕ ФАКТОРЫ ПОБЕДЫ КРАСНЫХ</h2>
+            <ul style="margin-left: 0;">
+                <li><strong>Единое централизованное командование:</strong> В отличие от белых, которые были разобщены, большевики имели единое руководство во главе с Лениным и эффективную командную структуру Красной Армии под началом Троцкого.</li>
+                <li><strong>Контроль промышленного центра:</strong> Красные контролировали центральную Россию с её промышленными городами, что давало им преимущество в вооружении и снабжении армии.</li>
+                <li><strong>Мощная идеологическая пропаганда:</strong> Большевики умело использовали лозунги о земле крестьянам, заводах рабочим и мире народам, что привлекало на их сторону широкие массы населения.</li>
+                <li><strong>Массовая мобилизация:</strong> Красные смогли мобилизовать миллионы людей в армию, используя как добровольческий принцип, так и насильственную мобилизацию.</li>
+                <li><strong>Использование царских офицеров:</strong> Привлечение военных специалистов из старой армии (под контролем комиссаров) дало Красной Армии профессионализм и военный опыт.</li>
+                <li><strong>Красный террор:</strong> Жёсткое и беспощадное подавление любого сопротивления, система заложников и массовые репрессии запугивали противников и удерживали население под контролем.</li>
+                <li><strong>Разобщённость белого движения:</strong> Белые армии не имели единого командования, часто конфликтовали между собой и не смогли предложить привлекательной политической программы.</li>
+            </ul>
+        </div>
+
+        <!-- Слайд 11: Итоги -->
+        <div class="slide">
+            <h2>ИТОГИ ГРАЖДАНСКОЙ ВОЙНЫ</h2>
+            <p>К концу 1922 года красные одержали полную победу над белыми армиями и различными антибольшевистскими силами. Последние очаги сопротивления были подавлены на Дальнем Востоке.</p>
+            <p style="margin-top: 20px;"><strong>Основные последствия победы красных:</strong></p>
+            <ul>
+                <li>В декабре 1922 года был создан СССР – новое государство, объединившее советские республики под властью большевиков.</li>
+                <li>Установлена однопартийная диктатура ВКП(б), которая контролировала все аспекты жизни общества.</li>
+                <li>Человеческие потери были колоссальными – по разным оценкам погибло от 8 до 10 миллионов человек от боевых действий, террора, болезней и голода.</li>
+                <li>Страна была разрушена, промышленное производство упало в несколько раз, сельское хозяйство было подорвано.</li>
+                <li>Около 2 миллионов человек эмигрировали из России, образовав русскую диаспору по всему миру.</li>
+                <li>Начался период строительства социализма, который привёл к индустриализации, коллективизации и массовым репрессиям 1930-х годов.</li>
+            </ul>
+        </div>
+
+        <!-- Слайд 12: Заключение -->
+        <div class="slide title-slide">
+            <h1>ЗАКЛЮЧЕНИЕ</h1>
+            <p style="font-size: 22px; color: #ccc; max-width: 900px; margin-top: 40px;">
+                Победа красных в Гражданской войне была результатом сочетания многих факторов: харизматичного лидерства, жёсткой организации, идеологической пропаганды и беспощадного террора. Лидеры красного движения создали новое государство, которое определило судьбу России на протяжении следующих семидесяти лет.
+            </p>
+            <p style="font-size: 22px; color: #ccc; max-width: 900px; margin-top: 30px;">
+                Однако эта победа была достигнута колоссальной ценой человеческих жизней, разрушения экономики и установления тоталитарного режима, последствия которого ощущаются до сих пор.
+            </p>
+        </div>
+    </div>
+
+    <div class="slide-number">
+        <span id="current">1</span> / <span id="total">12</span>
+    </div>
+
+    <div class="controls">
+        <button onclick="prevSlide()">← Назад</button>
+        <button onclick="nextSlide()">Вперёд →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total').textContent = totalSlides;
+        
+        function showSlide(n) {
+            const prevSlide = slides[currentSlide];
+            prevSlide.classList.add('prev');
+            prevSlide.classList.remove('active');
+            
+            setTimeout(() => {
+                prevSlide.classList.remove('prev');
+            }, 600);
+            
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current').textContent = currentSlide + 1;
+        }
+        
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+        
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+                nextSlide();
+            }
+            if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>
